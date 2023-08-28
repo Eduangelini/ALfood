@@ -1,21 +1,46 @@
 import { Button, TextField } from '@mui/material'
 import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import IRestaurante from '../../../interfaces/IRestaurante'
 
 export const FormularioRestaurante = () => {
+
+  const parametros = useParams()
+
+  useEffect(() => {
+    if (parametros.id) {
+      axios.get<IRestaurante>(`http://localhost:8000/api/v2/restaurantes/${parametros.id}/`)
+        .then(resposta => {
+          setNomeRestaurante(resposta.data.nome)
+        })
+        .catch(erro => console.log(erro))
+    }
+  }, [parametros])
 
   const [nomeRestaurante, setNomeRestaurante] = useState('')
 
   const aoSubmeterForm = (evento: React.FormEvent<HTMLFormElement>) => {
     evento.preventDefault()
 
-    axios.post('http://localhost:8000/api/v2/restaurantes/', {
-      nome: nomeRestaurante
-    })
-      .then(resposta => {
-        alert('Restaurante cadastrado com sucesso!')
+    if (parametros.id) {
+      axios.put(`http://localhost:8000/api/v2/restaurantes/${parametros.id}/`, {
+        nome: nomeRestaurante
       })
-      .catch(erro => console.log(erro))
+        .then(resposta => {
+          alert('Restaurante atualizado com sucesso!')
+        })
+        .catch(erro => console.log('erro de atualização'))
+
+    } else {
+      axios.post('http://localhost:8000/api/v2/restaurantes/', {
+        nome: nomeRestaurante
+      })
+        .then(resposta => {
+          alert('Restaurante cadastrado com sucesso!')
+        })
+        .catch(erro => console.log('erro de cadastramento'))
+    }
   }
 
 
