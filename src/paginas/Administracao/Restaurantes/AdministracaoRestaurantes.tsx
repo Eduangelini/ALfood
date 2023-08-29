@@ -16,7 +16,7 @@ const AdministracaoRestaurantes = () => {
 
   const excluir = (restauranteAhSerExcluido: IRestaurante) => {
     http.delete(`restaurantes/${restauranteAhSerExcluido.id}/`)
-      .then(resposta => {
+      .then((resposta) => {
         const novosRestaurantes = restaurantes.filter(restaurante => restaurante.id !== restauranteAhSerExcluido.id)
         setRestaurantes([...novosRestaurantes])
       })
